@@ -22,11 +22,29 @@ from db.models import *
 ############################################################################
 ## START OF APPLICATION
 ############################################################################
-""" Replace the code below with your own """
+""" Cash Register - Django ORM Implementation """
 
-# Seed a few users in the database
-User.objects.create(name='Dan')
-User.objects.create(name='Robert')
+from db.models import Product
+from populateDB import populate_products
 
-for u in User.objects.all():
-    print(f'ID: {u.id} \tUsername: {u.name}')
+
+# --- Scanning UI ---
+def scan_product():
+    upc = input("Enter Product UPC: ")
+
+    if upc.lower() == "exit":
+        print("Exiting scan.")
+        sys.exit()
+    try:
+        product = Product.objects.get(upc=upc)
+        print(f"Scanned Product: {product.name} - ${product.price}\n")
+    except Product.DoesNotExist:
+        print("Error: Product not found.\n")
+
+
+if __name__ == "__main__":
+    populate_products()
+    print("\n--- Scan Product ---")
+    print("Enter 'exit' to quit.\n")
+    while True:
+        scan_product()
